@@ -7,13 +7,26 @@ let endState = 47;
 let gameState = startingState;  // Initial game state
 const moveInput = document.getElementById("moveInput");
 
+// Add event listener to all buttons
+const buttons = document.querySelectorAll(".input-btn");
+
+const API_URL =
+  window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:3000"
+    : "https://orders-2gm0.onrender.com";
+
 let spaceConditions;
 let g;
 
 function createGrid(N) {
     grid.innerHTML = "";
+    /*
     grid.style.gridTemplateColumns = `repeat(${N}, 150px)`;
     grid.style.gridTemplateRows = `repeat(${N}, 150px)`;
+    */
+    grid.style.gridTemplateColumns = `repeat(${N}, 0.5fr)`;
+    grid.style.gridTemplateRows = `repeat(${N}, 0.5fr)`;
+
     const reverseMapping = ['A', 'B', 'C', 'D'];    
     for (let i = 0; i < N * N; i++) {
         let cell = document.createElement("div");
@@ -80,6 +93,7 @@ moveInput.addEventListener("input", (event) => {
     input = input.replace(/[^ABCD0123]/g, '');
     event.target.value = input;
     let moves = input.split('');
+    document.getElementById("inputLength").textContent = "Solution length: " + input.length;
     
     let newState = processMoves(moves, gameState);
     if (newState !== null) {
@@ -99,6 +113,21 @@ moveInput.addEventListener("selectionchange", (event) => {
         gameState = newState;
         updateColors(newState);
     }
+});
+
+buttons.forEach(button => {
+  button.addEventListener("click", (event) => {
+    const char = event.target.getAttribute("data-char");
+
+    if (char === "backspace") {
+      // Remove the last character when backspace is clicked
+      moveInput.value = moveInput.value.slice(0, -1);
+    } else {
+      // Append the character to the input field
+      moveInput.value += char;
+    }
+    moveInput.dispatchEvent(new Event('input'));
+  });
 });
 
 function processMoves(moves, state) {
@@ -126,8 +155,9 @@ function initializePuzzle(puzzle) {
 
 async function loadPuzzle(puzzleId){
   try {
-    //const response = await fetch(`http://localhost:3000/api/puzzle/${puzzleId}`);
-    const response = await fetch(`https://orders-2gm0.onrender.com/api/puzzle/${puzzleId}`);
+    const response = await fetch(`${API_URL}/api/puzzle/${puzzleId}`);
+    console.log(API_URL);
+    //const response = await fetch(`https://orders-2gm0.onrender.com/api/puzzle/${puzzleId}`);
     const puzzle = await response.json();
     initializePuzzle(puzzle);
     gameState = startingState;
