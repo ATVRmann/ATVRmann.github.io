@@ -9,25 +9,29 @@
   <body>
     <h1>Orders</h1>
     <div id="grid"></div>
-    <input
-      type="text"
-      id="moveInput"
-      placeholder="Enter moves..."
-      autocomplete="off"
-    />
+    <div id="moveInput-container">
+      <input
+        type="text"
+        id="moveInput"
+        placeholder="Enter moves..."
+        autocomplete="off"
+      />
+      <span id="inputLength">0</span>
+    </div>
     <div id="button-container">
       <button class="input-btn" data-char="A">A</button>
       <button class="input-btn" data-char="B">B</button>
-      <button class="input-btn" data-char="C">C</button>
-      <button class="input-btn" data-char="D">D</button>
       <button class="input-btn" data-char="0">0</button>
       <button class="input-btn" data-char="1">1</button>
-      <button class="input-btn" data-char="2">2</button>
-      <button class="input-btn" data-char="3">3</button>
-      <button class="input-btn" data-char="backspace">&#9003;</button>
+      <button class="input-btn" class="bottom-row" data-char="C">C</button>
+      <button class="input-btn" class="bottom-row" data-char="D">D</button>
+      <button class="input-btn" class="bottom-row" data-char="2">2</button>
+      <button class="input-btn" class="bottom-row" data-char="3">3</button>
+      <button class="input-btn" class="bottom-row" data-char="backspace">
+        &#9003;
+      </button>
       <!-- Backspace symbol -->
     </div>
-    <span id="inputLength">Solution length: 0</span>
     <script src="game.js"></script>
   </body>
 </html>
