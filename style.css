@@ -11,12 +11,12 @@ body{
   justify-content: center;
   align-items: center;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 1rem;
+  font-size: 80%;
 }
 
 #grid {
   display: grid;
-  gap: 1em;
+  gap: 1.5vh;
   margin: 20px auto;
   width: fit-content;
 
@@ -25,8 +25,9 @@ body{
   height: min(60vw, 600px);
   */
 
-  width: min(60vw, 60vh);
-  height: min(60vw, 60vh);
+  width: min(55vw, 55vh);
+  height: min(55vw, 55vh);
+  
   
   /*width: 30vw;
   height: 30vw;
@@ -40,20 +41,20 @@ body{
   */
   width: 100%;
   height: 100%;
-  border: 3px solid black;
+  border: 0.5vh solid black;
   display: flex;
   align-items: center;
   justify-content: center;
   color: lightgray;
   /*text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;*/
-  text-shadow: 3px 3px 0 #000;
+  text-shadow: 0.3vh 0.3vh 0 #000;
   font-family: Arial, Helvetica, sans-serif;
   /*font-size: 3rem;*/
   /*font-size: clamp(1rem, 8vw, 6rem); */
   font-size: min(6vw, 18vh, 4rem);
   font-weight: bold;
   /*margin: auto;*/
-  border-radius: 1rem;
+  border-radius: 20px;
 }
 
 .agent-1 { background-color: yellow; }
@@ -63,45 +64,68 @@ body{
 .agent-5 { background-color: orange; }
 .agent-6 { background-color: rgb(67, 246, 67); color: white;}
 
-.target-1{ border: 8px solid rgb(209, 209, 0);}
-.target-2{ border: 8px solid rgb(207, 0, 0);}
-.target-3{ border: 8px solid rgb(0, 0, 202);}
-.target-4{ border: 8px solid rgb(204, 0, 204);}
-.target-5{ border: 8px solid rgb(200, 130, 0);}
+.target-1{ border: 1vh solid rgb(209, 209, 0);}
+.target-2{ border: 1vh solid rgb(207, 0, 0);}
+.target-3{ border: 1vh solid rgb(0, 0, 202);}
+.target-4{ border: 1vh solid rgb(204, 0, 204);}
+.target-5{ border: 1vh solid rgb(200, 130, 0);}
 
-.overlap-triggered{border: 8px solid red; color: red;}
+.overlap-triggered{border: 1vw solid red; color: red;}
 
+/* Container for text input and input length */
+#moveInput-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  max-width: 500px;
+  margin: 10px auto;
+}
+
+/* Text input style */
 #moveInput {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem; 
   gap: 5px;
-  margin: 20px auto;
-  font-size: 1.5rem; 
+  font-size: 150%; 
   height: 50px;
-  width: 500px;  
+  flex: 1 1 auto;  /* Make it flexible, grow as needed */
   border-radius: 3rem;
   background-color: rgb(37, 37, 37);
   color: white;
 }
 
+/* Input length display */
 #inputLength {
   display: flex;
-  font-size: 2rem;
+  align-items: center;
+  font-size: 200%;
+  margin-left: 10px;
+  white-space: nowrap;
+  flex: 0 1 auto; /* Make it take up only necessary space */
 }
 
+/* Container for buttons */
 #button-container {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
-  justify-content: center;
+  justify-content: space-between;
   margin: 1rem;
+  width: 90%;
+  height: auto;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
+/* Button styles */
 .input-btn {
-  width: 60px;
-  height: 60px;
+  flex: 1 1 20%;  /* Ensure buttons resize evenly */
+  min-width: 50px;
+  height: 40px;
+  padding: 10px;
   font-size: 2rem;
   background-color: #444;
   color: white;
@@ -115,4 +139,19 @@ body{
 
 .input-btn:hover {
   background-color: #666;
+}
+
+/* Bottom row button styling */
+.input-btn.bottom-row {
+  width: 100%; /* Full width for the bottom row */
+}
+
+@media (max-width: 600px) {
+  #moveInput {
+    pointer-events: none;  /* Disable interaction on mobile */
+    /*background-color: #797979;*/  /* Optional: change background color to indicate it's disabled */
+  }
+  .input-btn {
+    height: auto;
+  }
 }
