@@ -5,7 +5,13 @@ const grid = document.getElementById("grid");
 let startingState = 68;
 let endState = 47;
 let gameState = startingState;  // Initial game state
+let currentPuzzleId = Math.floor(Math.random() * 100); //Change later
+//let currentPuzzleId = 6;
 const moveInput = document.getElementById("moveInput");
+const leftArrowBtn = document.getElementById('left-arrow-btn');
+const rightArrowBtn = document.getElementById('right-arrow-btn');
+const submitButton = document.getElementById("submitButton");
+const numberOfConditions = 4;
 
 // Add event listener to all buttons
 const buttons = document.querySelectorAll(".input-btn");
@@ -98,6 +104,7 @@ moveInput.addEventListener("input", (event) => {
     let newState = processMoves(moves, gameState);
     if (newState !== null) {
         gameState = newState;
+        submitAvailabilityCheck();
         updateColors(newState);
     }
 });
@@ -111,9 +118,19 @@ moveInput.addEventListener("selectionchange", (event) => {
     let newState = processMoves(moves, gameState);
     if (newState !== null) {
         gameState = newState;
+        submitAvailabilityCheck();
         updateColors(newState);
     }
 });
+
+function submitAvailabilityCheck(){
+  if(gameState === endState){
+    submitButton.disabled = false;
+  }
+  else{
+    submitButton.disabled = true;    
+  }
+}
 
 buttons.forEach(button => {
   button.addEventListener("click", (event) => {
@@ -122,15 +139,37 @@ buttons.forEach(button => {
     if (char === "backspace") {
       // Remove the last character when backspace is clicked
       moveInput.value = moveInput.value.slice(0, -1);
-    } else {
+    } 
+    else if (button.id === 'left-arrow-btn' || button.id === 'right-arrow-btn')
+    {}
+    else {
       // Append the character to the input field
       moveInput.value += char;
+      //moveInput.setSelectionRange(currentPosition, currentPosition);
+      //console.log(moveInput.selectionStart);
     }
-    moveInput.dispatchEvent(new Event('input'));
+    if (button.id !== 'left-arrow-btn' && button.id !== 'right-arrow-btn')
+      moveInput.dispatchEvent(new Event('input'));
   });
 });
 
-function processMoves(moves, state) {
+// Move the cursor left
+leftArrowBtn.addEventListener('click', () => {
+  const currentPosition = moveInput.selectionStart;
+  if (currentPosition > 0) {
+    moveInput.setSelectionRange(currentPosition - 1, currentPosition - 1);
+  }
+});
+
+// Move the cursor right
+rightArrowBtn.addEventListener('click', () => {
+  const currentPosition = moveInput.selectionStart;
+  if (currentPosition < moveInput.value.length) {
+    moveInput.setSelectionRange(currentPosition + 1, currentPosition + 1);
+  }
+});
+/*
+function oldProcessMoves(moves, state) {
     const mapping = {
       'A': 0, 'B': 1, 'C': 2, 'D': 3,
       '0': 4, '1': 5, '2': 6, '3': 7
@@ -143,6 +182,49 @@ function processMoves(moves, state) {
    }
    return newState;
 }
+*/
+function processMoves(moves, state) {
+  const mapping = {
+    'A': 0, 'B': 1, 'C': 2, 'D': 3,
+    '0': 4, '1': 5, '2': 6, '3': 7
+  };
+ let movesNum = moves.map(char => mapping[char]);
+ let newState = startingState;
+ for(let i = 0; i < movesNum.length; ++i)
+ {
+    //newState = g[newState][movesNum[i]];
+    let agentPositions = getAgentPos(newState);
+    let step = movesNum[i];
+    for(let j = 0; j < numAgents; ++j)
+    {
+      let aPos = agentPositions[j];
+      if(aPos >= N && spaceConditions[aPos - N][Math.floor(step / numberOfConditions)] === step % numberOfConditions) {
+        newState -= N * Math.pow(numSquares, j);
+      }
+      else if(aPos + N < numSquares && spaceConditions[aPos + N][Math.floor(step / numberOfConditions)] === step % numberOfConditions) {
+        newState += N * Math.pow(numSquares, j);
+      }
+      else if((aPos % N) > 0 && spaceConditions[aPos - 1][Math.floor(step / numberOfConditions)] === step % numberOfConditions) {        
+        newState -= Math.pow(numSquares, j);
+      }
+      else if((aPos % N) < N - 1 && spaceConditions[aPos + 1][Math.floor(step / numberOfConditions)] === step % numberOfConditions) {
+        newState += Math.pow(numSquares, j);
+      }
+    }
+ }
+ return newState;
+}
+
+function getAgentPos(state) {
+  let arr = Array(numAgents);
+  let s = state;
+  for(let i = 0; i < numAgents; ++i)
+  {
+    arr[i] = s % numSquares;
+    s = Math.floor(s / numSquares);
+  }
+  return arr;
+}
 
 function initializePuzzle(puzzle) {
   N = puzzle.N;
@@ -150,20 +232,27 @@ function initializePuzzle(puzzle) {
   startingState = puzzle.startingState;
   endState = puzzle.endState;
   spaceConditions = puzzle.spaceConditions;
-  g = puzzle.g;
+  //g = puzzle.g;
 }
 
 async function loadPuzzle(puzzleId){
   try {
     const response = await fetch(`${API_URL}/api/puzzle/${puzzleId}`);
-    console.log(API_URL);
-    //const response = await fetch(`https://orders-2gm0.onrender.com/api/puzzle/${puzzleId}`);
+
+    /*
+    puzzleId = 0;
+    const response = await fetch(`${API_URL}/api/dailyPuzzle/${puzzleId}`);
+    */
+
     const puzzle = await response.json();
     initializePuzzle(puzzle);
     gameState = startingState;
     numSquares = N * N;
     createGrid(N);
     cssAdjustments();
+    submitAvailabilityCheck();
+
+    console.log(puzzle);
   } catch (error) {
     console.error('Error fetching puzzle:', error);
   }
@@ -238,6 +327,42 @@ function adjustBorderRadius() {
   });
 }
 
+submitButton.addEventListener("click", function () {
+  const cursorPosition = moveInput.selectionStart;  // Get cursor position
+    const inputSubstring = moveInput.value.substring(0, cursorPosition); // Extract substring
+    const payload = {
+        puzzleId: currentPuzzleId,  
+        input: inputSubstring
+    };
+
+    //console.log(JSON.stringify(payload));
+
+    fetch(`${API_URL}/verify-solution`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Response from backend:", data);
+
+        if (data.success) {
+          document.getElementById("successDialog").style.display = "block"; // Show dialog
+          document.getElementById("closeDialog").addEventListener("click", () => {
+            document.getElementById("successDialog").style.display = "none"; // Hide dialog
+          });
+        } else {
+            alert("Incorrect. Try again!");
+        }
+       
+    })
+    .catch(error => console.error("Error:", error));
+});
+
+
+
 // Run again on window resize to adjust for changes
 window.addEventListener('resize', adjustBorderRadius);
 
@@ -251,4 +376,4 @@ window.addEventListener('resize', adjustGridGap);
 
 
 //loadPuzzle(0);
-loadPuzzle(Math.floor(Math.random() * 7));
+loadPuzzle(currentPuzzleId);
