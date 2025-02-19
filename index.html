@@ -7,31 +7,41 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Orders</h1>
-    <div id="grid"></div>
-    <div id="moveInput-container">
-      <input
-        type="text"
-        id="moveInput"
-        placeholder="Enter moves..."
-        autocomplete="off"
-      />
-      <span id="inputLength">0</span>
+    <div id="centered-content">
+      <h1>Orders</h1>
+      <div id="grid"></div>
+      <div id="moveInput-container">
+        <input
+          type="text"
+          id="moveInput"
+          placeholder="Enter moves..."
+          autocomplete="off"
+        />
+        <span id="inputLength">0</span>
+      </div>
+      <div id="button-container">
+        <button class="input-btn" data-char="A">A</button>
+        <button class="input-btn" data-char="B">B</button>
+        <button class="input-btn" data-char="0">0</button>
+        <button class="input-btn" data-char="1">1</button>
+        <button class="input-btn" class="bottom-row" data-char="C">C</button>
+        <button class="input-btn" class="bottom-row" data-char="D">D</button>
+        <button class="input-btn" class="bottom-row" data-char="2">2</button>
+        <button class="input-btn" class="bottom-row" data-char="3">3</button>
+        <button class="input-btn" id="left-arrow-btn">←</button>
+        <button class="input-btn" id="right-arrow-btn">→</button>
+        <button class="input-btn" class="bottom-row" data-char="backspace">
+          &#9003;
+        </button>
+      </div>
     </div>
-    <div id="button-container">
-      <button class="input-btn" data-char="A">A</button>
-      <button class="input-btn" data-char="B">B</button>
-      <button class="input-btn" data-char="0">0</button>
-      <button class="input-btn" data-char="1">1</button>
-      <button class="input-btn" class="bottom-row" data-char="C">C</button>
-      <button class="input-btn" class="bottom-row" data-char="D">D</button>
-      <button class="input-btn" class="bottom-row" data-char="2">2</button>
-      <button class="input-btn" class="bottom-row" data-char="3">3</button>
-      <button class="input-btn" class="bottom-row" data-char="backspace">
-        &#9003;
-      </button>
-      <!-- Backspace symbol -->
-    </div>
+    <button id="submitButton">Submit</button>
     <script src="game.js"></script>
+    <div id="successDialog" class="dialog">
+      <div class="dialog-content">
+        <p>Congratulations! Your solution is correct. 🎉</p>
+        <button id="closeDialog">OK</button>
+      </div>
+    </div>
   </body>
 </html>
