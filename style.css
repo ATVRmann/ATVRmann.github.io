@@ -14,6 +14,23 @@ body{
   font-size: 80%;
 }
 
+h1{
+  display: grid;
+  place-items: center;
+  background-color: rgb(51, 51, 51);
+  color: white;
+  margin: 5px auto;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 200%;
+}
+
+#left-arrow-btn,
+#right-arrow-btn {
+  display: none;
+}
+
 #grid {
   display: grid;
   gap: 1.5vh;
@@ -146,6 +163,72 @@ body{
   width: 100%; /* Full width for the bottom row */
 }
 
+#submitButton {
+  width: 100%;
+  max-width: 200px;
+  padding: 10px;
+  font-size: 1.5rem;
+  background-color: #008CBA;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: block;
+  margin: 1rem auto;
+}
+
+#submitButton:hover {
+  background-color: #005f73;
+}
+
+#submitButton:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.dialog {
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  padding: 2rem;
+  border-radius: 1rem;
+  color: white;
+  display: none; /* Hidden by default */
+  z-index: 1000;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 200%;
+}
+
+.dialog-content {
+  background: #222;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+#closeDialog {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #4CAF50;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 0.3rem;
+}
+
+#closeDialog:hover {
+  background: #45a049;
+}
+
+button {
+  touch-action: manipulation;
+}
+
 @media (max-width: 600px) {
   #moveInput {
     pointer-events: none;  /* Disable interaction on mobile */
@@ -153,5 +236,9 @@ body{
   }
   .input-btn {
     height: auto;
+  }
+  #left-arrow-btn,
+  #right-arrow-btn {
+    display: inline-flex; /* or flex, depending on your layout */
   }
 }
