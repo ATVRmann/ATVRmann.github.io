@@ -8,7 +8,10 @@
   </head>
   <body>
     <div id="centered-content">
-      <h1>Orders</h1>
+      <div id="top-banner">
+        <h1 id="topTitle">Orders</h1>
+        <h2 id="practicePuzzleId"></h2>
+      </div>
       <div id="grid"></div>
       <div id="moveInput-container">
         <input
@@ -35,12 +38,46 @@
         </button>
       </div>
     </div>
-    <button id="submitButton">Submit</button>
+    <div id="bottom-button-container">
+      <button id="giveUpButton" class="bottomButton">Give Up</button>
+      <button id="puzzleByIdButton" class="bottomButton">Puzzle by ID</button>
+      <button id="newPuzzleButton" class="bottomButton">New Puzzle</button>
+      <button id="submitButton" class="bottomButton">Submit</button>
+    </div>
     <script src="game.js"></script>
     <div id="successDialog" class="dialog">
       <div class="dialog-content">
-        <p>Congratulations! Your solution is correct. 🎉</p>
-        <button id="closeDialog">OK</button>
+        <p id="dialogPuzzleId"></p>
+        <p id="ySolLenStr"></p>
+        <p id="optSolLenStr"></p>
+        <p id="optSol"></p>
+        <button id="revealOpt">Reveal optimal solution</button>
+        <button id="practiceBtn" class="practice-btn">Practice mode</button>
+        <button id="closeDialog">Close</button>
+      </div>
+    </div>
+    <div id="failureDialog" class="dialog">
+      <div class="dialog-content">
+        <p id="failureDialogPuzzleId"></p>
+        <p id="failureOptSolLenStr"></p>
+        <p id="failureOptSol"></p>
+        <button id="failurePracticeBtn" class="practice-btn">
+          Practice mode
+        </button>
+        <button id="failureCloseDialog">Close</button>
+      </div>
+    </div>
+    <div id="idDialog" class="dialog">
+      <div class="dialog-content">
+        <p>Enter ID:</p>
+        <input
+          type="text"
+          id="idInput"
+          placeholder="Enter ID..."
+          autocomplete="off"
+        />
+        <button id="idLoadButton">Load Puzzle</button>
+        <button id="closeIdDialog">Close</button>
       </div>
     </div>
   </body>
