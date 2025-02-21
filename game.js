@@ -5,12 +5,15 @@ const grid = document.getElementById("grid");
 let startingState = 68;
 let endState = 47;
 let gameState = startingState;  // Initial game state
-let currentPuzzleId = Math.floor(Math.random() * 100); //Change later
-//let currentPuzzleId = 6;
+//let currentPuzzleId = Math.floor(Math.random() * 100); //Change later
+//let currentPuzzleId = 100;
+let currentPuzzleId;
+let currentSolution;
 const moveInput = document.getElementById("moveInput");
 const leftArrowBtn = document.getElementById('left-arrow-btn');
 const rightArrowBtn = document.getElementById('right-arrow-btn');
 const submitButton = document.getElementById("submitButton");
+
 const numberOfConditions = 4;
 
 // Add event listener to all buttons
@@ -58,18 +61,21 @@ function updateColors(state) {
     let counter = 0;
     for (let i = 0; i < colorMapping.length; i++) {
         let cell = document.getElementById(`cell-${i}`);
-        cell.classList.remove(`overlap-triggered`);       
-        for(let j = 1; j <= 6; ++j)
-          cell.classList.remove(`agent-${j}`);
-        if(colorMapping[i] !== 0)
-        {
-          ++counter;
-          if (state != endState) {
-              cell.classList.add(`agent-${colorMapping[i]}`);            
-          }
-          else
+        if(cell) {
+          cell.classList.remove(`overlap-triggered`);     
+        
+          for(let j = 1; j <= 6; ++j)
+            cell.classList.remove(`agent-${j}`);
+          if(colorMapping[i] !== 0)
           {
-            cell.classList.add(`agent-6`)
+            ++counter;
+            if (state != endState) {
+                cell.classList.add(`agent-${colorMapping[i]}`);            
+            }
+            else
+            {
+              cell.classList.add(`agent-6`)
+            }
           }
         }
     }
@@ -78,7 +84,8 @@ function updateColors(state) {
       for(let i = 0; i < numSquares; ++i)
       {
           let cell = document.getElementById(`cell-${i}`);
-          cell.classList.add(`overlap-triggered`);  
+          if(cell)
+            cell.classList.add(`overlap-triggered`);  
       }
     }
 }
@@ -155,19 +162,24 @@ buttons.forEach(button => {
 
 // Move the cursor left
 leftArrowBtn.addEventListener('click', () => {
+  moveInput.blur();
   const currentPosition = moveInput.selectionStart;
   if (currentPosition > 0) {
     moveInput.setSelectionRange(currentPosition - 1, currentPosition - 1);
   }
+  moveInput.focus();
 });
 
 // Move the cursor right
 rightArrowBtn.addEventListener('click', () => {
+  moveInput.blur();
   const currentPosition = moveInput.selectionStart;
   if (currentPosition < moveInput.value.length) {
     moveInput.setSelectionRange(currentPosition + 1, currentPosition + 1);
   }
+  moveInput.focus();
 });
+
 /*
 function oldProcessMoves(moves, state) {
     const mapping = {
@@ -232,18 +244,23 @@ function initializePuzzle(puzzle) {
   startingState = puzzle.startingState;
   endState = puzzle.endState;
   spaceConditions = puzzle.spaceConditions;
+  currentPuzzleId = puzzle.id;
+  document.getElementById("practicePuzzleId").textContent = "Puzzle ID: " + currentPuzzleId;
+  moveInput.value = "";
+  document.getElementById("inputLength").textContent = 0;
+  moveInput.disabled = false;
+  moveInput.focus();
+  buttons.forEach(button => {
+    button.disabled = false;
+  });
   //g = puzzle.g;
 }
 
+/*
 async function loadPuzzle(puzzleId){
   try {
+    currentPuzzleId = puzzleId;
     const response = await fetch(`${API_URL}/api/puzzle/${puzzleId}`);
-
-    /*
-    puzzleId = 0;
-    const response = await fetch(`${API_URL}/api/dailyPuzzle/${puzzleId}`);
-    */
-
     const puzzle = await response.json();
     initializePuzzle(puzzle);
     gameState = startingState;
@@ -257,6 +274,7 @@ async function loadPuzzle(puzzleId){
     console.error('Error fetching puzzle:', error);
   }
 }
+*/
 
 function adjustGridGap() {
   const grid = document.getElementById('grid');
@@ -327,11 +345,49 @@ function adjustBorderRadius() {
   });
 }
 
+function initializeSolutionInfo(solution, userSolLen) {
+  /*
+        <p id="ySolLenStr"></p>
+        <p id="optSolLenStr"></p>
+        <p id="optSol"></p>
+  */
+ document.getElementById("dialogPuzzleId").textContent = "Puzzle ID: " + currentPuzzleId;
+ document.getElementById("ySolLenStr").textContent = "You got it in " + userSolLen + " moves.";
+ document.getElementById("optSolLenStr").textContent = "The optimal solution is " + solution.solutionLength + " moves.";
+ document.getElementById("revealOpt").addEventListener("click", () => {
+  document.getElementById("optSol").textContent = "An optimal solution: " + solution.optimalSolution;
+  document.getElementById("optSol").style.display = "grid";
+  document.getElementById("revealOpt").style.display = "none";        
+});
+}
+
+function initializeFailureSolutionInfo(solution) {
+ document.getElementById("failureDialogPuzzleId").textContent = "Puzzle ID: " + currentPuzzleId; 
+ document.getElementById("failureOptSolLenStr").textContent = "The optimal solution is " + solution.solutionLength + " moves.";
+ document.getElementById("failureOptSol").textContent = "An optimal solution: " + solution.optimalSolution;
+}
+
+function onCloseDialog() {
+ document.getElementById("dialogPuzzleId").textContent = "";
+ document.getElementById("ySolLenStr").textContent = "";
+ document.getElementById("optSolLenStr").textContent = "";
+ document.getElementById("optSol").style.display = "none";
+ document.getElementById("revealOpt").style.display = "grid";    
+ document.getElementById("successDialog").style.display = "none";
+}
+
+function onCloseFailureDialog() {
+  document.getElementById("failureDialogPuzzleId").textContent = "";  
+  document.getElementById("failureOptSolLenStr").textContent = "";
+  document.getElementById("failureOptSol").textContent = "";
+  document.getElementById("failureDialog").style.display = "none";
+ }
+
 submitButton.addEventListener("click", function () {
   const cursorPosition = moveInput.selectionStart;  // Get cursor position
-    const inputSubstring = moveInput.value.substring(0, cursorPosition); // Extract substring
+    const inputSubstring = moveInput.value.substring(0, cursorPosition); // Extract substring    
     const payload = {
-        puzzleId: currentPuzzleId,  
+        puzzleId: currentPuzzleId,          
         input: inputSubstring
     };
 
@@ -346,13 +402,23 @@ submitButton.addEventListener("click", function () {
     })
     .then(response => response.json())
     .then(data => {
-        console.log("Response from backend:", data);
+        //console.log("Response from backend:", data);
 
         if (data.success) {
-          document.getElementById("successDialog").style.display = "block"; // Show dialog
+
+          getSolutionByKey(data.key).then(loadedSolution => {
+            currentSolution = loadedSolution;
+            initializeSolutionInfo(loadedSolution, inputSubstring.length);            
+          });          
+
+          document.getElementById("successDialog").style.display = "block";
           document.getElementById("closeDialog").addEventListener("click", () => {
-            document.getElementById("successDialog").style.display = "none"; // Hide dialog
+            onCloseDialog();          
           });
+          document.getElementById("practiceBtn").addEventListener('click', () => {
+            initializePracticeMode();
+            onCloseDialog();
+          });          
         } else {
             alert("Incorrect. Try again!");
         }
@@ -361,7 +427,168 @@ submitButton.addEventListener("click", function () {
     .catch(error => console.error("Error:", error));
 });
 
+async function getSolutionByKey(key){
+  const payload = {
+    key: key
+  };
 
+  const response = fetch(`${API_URL}/getSolutionById`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  })
+  const data = (await response).json();
+  return data;
+}
+
+function initializePracticeMode() {
+  document.getElementById("topTitle").style.display = "none";
+  loadRandomPracticePuzzle();
+  const pid = document.getElementById("practicePuzzleId");
+  pid.style.display = "grid";
+  document.getElementById("newPuzzleButton").style.display = "grid";
+  document.getElementById("puzzleByIdButton").style.display = "grid";
+  document.getElementById("newPuzzleButton").removeEventListener("click", initializePracticeMode);
+  document.getElementById("newPuzzleButton").addEventListener("click", initializePracticeMode);
+  document.getElementById("puzzleByIdButton").removeEventListener("click", openIdDialog);
+  document.getElementById("puzzleByIdButton").addEventListener("click", openIdDialog);
+}
+
+function openIdDialog() {
+  document.getElementById("idDialog").style.display = "block";
+  document.getElementById("closeIdDialog").removeEventListener("click", onCloseIdDialog);
+  document.getElementById("closeIdDialog").addEventListener("click", onCloseIdDialog);
+  document.getElementById("idLoadButton").addEventListener('click', () => {
+    let id = document.getElementById("idInput").value.toUpperCase();
+    loadPuzzleFromId(id);
+    onCloseIdDialog();
+  });
+  document.getElementById("idInput").focus();
+}
+
+function onCloseIdDialog() {
+  document.getElementById("idDialog").style.display = "none";
+}
+
+function onGiveUp() {
+  moveInput.disabled = true;
+  buttons.forEach(button => {
+    button.disabled = true;
+  });
+
+
+  const payload = {
+    puzzleId: currentPuzzleId,          
+  };
+
+  fetch(`${API_URL}/give-up`, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  }) 
+  .then(response => response.json())
+  .then(data => {
+    //console.log("Response from backend:", data);
+    getSolutionByKey(data.key).then(loadedSolution => {
+      currentSolution = loadedSolution;
+      initializeFailureSolutionInfo(loadedSolution);            
+    });          
+
+    document.getElementById("failureDialog").style.display = "block";
+    document.getElementById("failureCloseDialog").addEventListener("click", () => {
+      onCloseFailureDialog();          
+    });
+    document.getElementById("failurePracticeBtn").addEventListener('click', () => {
+      initializePracticeMode();
+      onCloseFailureDialog();
+    });          
+  })
+  .catch(error => console.error("Error:", error));
+}
+
+function loadPuzzleFromId(puzzleId) {
+  const payload = {
+    puzzleId: puzzleId             
+  };
+
+  fetch(`${API_URL}/getPuzzleById`, {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(response => response.json())
+  .then(data => {
+    initializePuzzle(data);
+    gameState = startingState;
+    numSquares = N * N;
+    createGrid(N);
+    cssAdjustments();
+    submitAvailabilityCheck();
+  })
+  .catch(error => {
+    console.error('Error fetching puzzle:', error);
+  });
+}
+
+function loadRandomPracticePuzzle() {
+  fetch(`${API_URL}/getRandomPracticePuzzle`, {
+    method: 'POST'      
+  })
+  .then(response => response.json())
+  .then(data => {
+    initializePuzzle(data);
+    gameState = startingState;
+    numSquares = N * N;
+    createGrid(N);
+    cssAdjustments();
+    submitAvailabilityCheck();
+  })
+  .catch (error => {
+    console.error('Error fetching puzzle:', error);
+  });
+}
+
+async function loadDaily(){
+  /*
+  try {    
+    const response = await fetch(`${API_URL}/getDailyPuzzle`);
+    const puzzle = await response.json();
+*/
+    fetch(`${API_URL}/getDailyPuzzle`, {
+      method: 'POST'      
+    })
+    .then(response => response.json())
+    .then(data => {
+      initializePuzzle(data);
+      gameState = startingState;
+      numSquares = N * N;
+      createGrid(N);
+      cssAdjustments();
+      submitAvailabilityCheck();
+    })
+    .catch (error => {
+      console.error('Error fetching puzzle:', error);
+    });
+
+/*
+    initializePuzzle(puzzle);
+    gameState = startingState;
+    numSquares = N * N;
+    createGrid(N);
+    cssAdjustments();
+    submitAvailabilityCheck();
+    //console.log(puzzle);
+  } catch (error) {
+    console.error('Error fetching puzzle:', error);
+  }
+  */
+}
 
 // Run again on window resize to adjust for changes
 window.addEventListener('resize', adjustBorderRadius);
@@ -374,6 +601,11 @@ window.addEventListener('resize', adjustFontSize);
 
 window.addEventListener('resize', adjustGridGap);
 
+document.getElementById("giveUpButton").addEventListener("click", onGiveUp);
 
 //loadPuzzle(0);
-loadPuzzle(currentPuzzleId);
+//loadPuzzle(currentPuzzleId);
+
+moveInput.focus();
+
+loadDaily();
