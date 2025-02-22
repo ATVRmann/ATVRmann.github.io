@@ -238,7 +238,7 @@ function getAgentPos(state) {
   return arr;
 }
 
-function initializePuzzle(puzzle) {
+function initializePuzzle(puzzle, isTheDaily = false) {
   N = puzzle.N;
   numAgents = puzzle.numAgents;
   startingState = puzzle.startingState;
@@ -253,6 +253,12 @@ function initializePuzzle(puzzle) {
   buttons.forEach(button => {
     button.disabled = false;
   });
+  if(!isTheDaily) {
+    updateUrl(currentPuzzleId);
+  }
+  else {
+    clearUrlParams();
+  }
   //g = puzzle.g;
 }
 
@@ -443,17 +449,29 @@ async function getSolutionByKey(key){
   return data;
 }
 
-function initializePracticeMode() {
+function initializePracticeMode(query = "") {
   document.getElementById("topTitle").style.display = "none";
-  loadRandomPracticePuzzle();
+  if(query === "") {
+    loadRandomPracticePuzzle();
+    console.log("yes");
+  }
+  else {
+    loadPuzzleFromId(query);
+    console.log("here");
+  }
   const pid = document.getElementById("practicePuzzleId");
   pid.style.display = "grid";
   document.getElementById("newPuzzleButton").style.display = "grid";
   document.getElementById("puzzleByIdButton").style.display = "grid";
-  document.getElementById("newPuzzleButton").removeEventListener("click", initializePracticeMode);
-  document.getElementById("newPuzzleButton").addEventListener("click", initializePracticeMode);
+  document.getElementById("newPuzzleButton").removeEventListener("click", onNewButtonClicked);
+  document.getElementById("newPuzzleButton").addEventListener("click", onNewButtonClicked);
   document.getElementById("puzzleByIdButton").removeEventListener("click", openIdDialog);
   document.getElementById("puzzleByIdButton").addEventListener("click", openIdDialog);
+}
+
+function onNewButtonClicked() {
+  clearUrlParams();
+  initializePracticeMode();
 }
 
 function openIdDialog() {
@@ -462,6 +480,7 @@ function openIdDialog() {
   document.getElementById("closeIdDialog").addEventListener("click", onCloseIdDialog);
   document.getElementById("idLoadButton").addEventListener('click', () => {
     let id = document.getElementById("idInput").value.toUpperCase();
+    //clearUrlParams();
     loadPuzzleFromId(id);
     onCloseIdDialog();
   });
@@ -565,7 +584,7 @@ async function loadDaily(){
     })
     .then(response => response.json())
     .then(data => {
-      initializePuzzle(data);
+      initializePuzzle(data, true);
       gameState = startingState;
       numSquares = N * N;
       createGrid(N);
@@ -590,6 +609,18 @@ async function loadDaily(){
   */
 }
 
+function updateUrl(puzzleId) {  
+  const params = new URLSearchParams(window.location.search);
+  params.delete("puzzle");
+  params.set("puzzle", puzzleId);  
+  window.history.replaceState({}, "", `${window.location.pathname}?${params}`);
+}
+
+function clearUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  params.delete("puzzle");
+}
+
 // Run again on window resize to adjust for changes
 window.addEventListener('resize', adjustBorderRadius);
 
@@ -608,4 +639,13 @@ document.getElementById("giveUpButton").addEventListener("click", onGiveUp);
 
 moveInput.focus();
 
-loadDaily();
+
+const params = new URLSearchParams(window.location.search);
+const query = params.get("puzzle");
+
+if(query) {
+  initializePracticeMode(query);
+}
+else {
+  loadDaily();
+}
