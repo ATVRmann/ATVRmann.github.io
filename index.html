@@ -52,19 +52,77 @@
         <p id="optSolLenStr"></p>
         <p id="optSol"></p>
         <button id="revealOpt">Reveal optimal solution</button>
-        <button id="practiceBtn" class="practice-btn">Practice mode</button>
-        <button id="closeDialog">Close</button>
+        <button id="practiceBtn" class="dialog-button">Practice mode</button>
+        <button id="closeDialog" class="dialog-button">Close</button>
       </div>
+    </div>
+    <div id="dailyDialog" class="dialog">
+      <div class="dialog-content">
+        <!-- Puzzle Info -->
+        <p id="ddDate" class="dialog-title"></p>
+        <p id="ddFoundOpt"></p>
+        <!-- Solution Info Section -->
+        <div id="solutionContainer">
+          <div class="solution-box">
+            <p>
+              <strong id="ddUserSolLabel">Your Solution:</strong>
+              <span id="ddUserSolLenStr"></span>
+            </p>
+            <p id="ddUserSol"></p>
+          </div>
+
+          <div class="solution-box">
+            <p>
+              <strong>Optimal Solution:</strong>
+              <span id="ddOptSolLenStr"></span>
+            </p>
+            <button id="ddRevealOpt" class="dialog-button small">Reveal</button>
+            <p id="ddOptSol" class="hidden solution-text"></p>
+          </div>
+        </div>
+
+        <!-- User Stats (Inline) -->
+        <div id="userStats">
+          <div class="stat-item">
+            <strong>🧩</strong>
+            <span>Solved:</span>
+            <span id="ddTotalSolved"></span>
+          </div>
+          <div class="stat-item">
+            <strong>✨</strong>
+            <span>Optimal:</span>
+            <span id="ddTotalOptimal"></span>
+          </div>
+          <div class="stat-item">
+            <strong>🔥</strong>
+            <span>Streak:</span>
+            <span id="ddStreak"></span>
+          </div>
+        </div>
+
+        <!-- Countdown Timer -->
+        <p id="ddCountdown"></p>
+
+        <!-- Buttons -->
+        <div id="dialogButtons">
+          <button id="ddShareBtn" class="dialog-button">📤 Share</button>
+          <button id="ddPracticeBtn" class="dialog-button">🔄 Practice</button>
+          <button id="ddCloseDialog" class="dialog-button close">
+            ❌ Close
+          </button>
+        </div>
+      </div>
+      <div id="toast" class="toast">Copied to clipboard!</div>
     </div>
     <div id="failureDialog" class="dialog">
       <div class="dialog-content">
         <p id="failureDialogPuzzleId"></p>
         <p id="failureOptSolLenStr"></p>
         <p id="failureOptSol"></p>
-        <button id="failurePracticeBtn" class="practice-btn">
+        <button id="failurePracticeBtn" class="dialog-button">
           Practice mode
         </button>
-        <button id="failureCloseDialog">Close</button>
+        <button id="failureCloseDialog" class="dialog-button">Close</button>
       </div>
     </div>
     <div id="idDialog" class="dialog">
@@ -76,8 +134,8 @@
           placeholder="Enter ID..."
           autocomplete="off"
         />
-        <button id="idLoadButton">Load Puzzle</button>
-        <button id="closeIdDialog">Close</button>
+        <button id="idLoadButton" class="dialog-button">Load Puzzle</button>
+        <button id="closeIdDialog" class="dialog-button">Close</button>
       </div>
     </div>
   </body>
