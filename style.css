@@ -127,17 +127,15 @@ h2{
 }
 
 #idInput {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem; 
-  gap: 5px;
-  font-size: 150%; 
-  height: 50px;
-  flex: 1 1 auto;  /* Make it flexible, grow as needed */
-  border-radius: 3rem;
+  width: 100%;
+  max-width: 90%; /* Prevents it from exceeding the dialog */
+  padding: 0.8rem; 
+  font-size: clamp(1rem, 4vw, 1.2rem); 
+  border-radius: 1.5rem;
   background-color: rgb(37, 37, 37);
   color: white;
+  border: 1px solid #666;
+  box-sizing: border-box; /* Ensures padding doesn't expand it */
 }
 
 /* Input length display */
@@ -281,72 +279,50 @@ h2{
   transform: none;
 }
 
+/*
+
 .dialog {
   position: fixed;
-  top: 25%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.8);
-  padding: 2rem;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 2vh 4vw;
   border-radius: 1rem;
   color: white;
-  display: none; /* Hidden by default */
+  display: none;
   z-index: 1000;
   text-align: center;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 150%;
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  width: 80vw;
+  max-width: 400px;
 }
 
 .dialog-content {
-  background: #222;
+  background: #222;  
+  max-width: 90vw;
   padding: 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+  border-radius: 0.7rem;
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+  line-height: 1.6;
 }
 
-#closeDialog {
+.dialog-button {
   margin-top: 1rem;
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1.2rem;
   border: none;
   background: #4CAF50;
   color: white;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 3.5vw, 1.2rem);
   cursor: pointer;
-  border-radius: 0.3rem;
+  border-radius: 0.4rem;
+  width: 100%;
+  max-width: 200px;
 }
 
-#closeDialog:hover {
+.dialog-button:hover {
   background: #45a049;
-}
-
-#failureCloseDialog {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  border: none;
-  background: #4CAF50;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 0.3rem;
-}
-
-#failureCloseDialog:hover {
-  background: #45a049;
-}
-
-.practice-btn {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  border: none;
-  background: #4CAF50;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 0.3rem;
-}
-
-.practice-btn:hover {
-  background-color: #45a049; /* Darker green on hover */
 }
 
 #revealOpt {
@@ -357,22 +333,236 @@ h2{
   border: none;
   background: #6d6d6d;
   color: white;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 3.5vw, 1.2rem);
   cursor: pointer;
   border-radius: 0.3rem;
 }
 
 #revealOpt:hover {
-  background-color: #45a049; /* Darker green on hover */
+  background-color: #5c5c5c;
+}
+
+#ddRevealOpt {
+  display: grid;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #6d6d6d;
+  color: white;
+  font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+  cursor: pointer;
+  border-radius: 0.3rem;
+}
+
+#ddRevealOpt:hover {
+  background-color: #5c5c5c;
 }
 
 #optSol {
   display: none;
 }
 
+#ddOptSol {
+  display: none;
+}
+
 button {
   touch-action: manipulation;
 }
+  */
+
+/*START*/
+
+/* Main dialog container */
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.85);
+  padding: 2vh 4vw;
+  border-radius: 1rem;
+  color: white;
+  display: none; /* Hidden by default */
+  z-index: 1000;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  width: 90vw;
+  max-width: 450px;
+}
+
+/* Dialog content box */
+.dialog-content {
+  background: #222;
+  padding: 1.5rem;
+  border-radius: 0.7rem;
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Puzzle info section */
+#ddDate, #ddPuzzleId {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* Solution comparison section */
+.solution-section {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 400px;
+  margin: 1rem 0;
+}
+
+.solution-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.user-solution, .optimal-solution {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+  font-size: 1rem;
+  word-wrap: break-word;
+}
+
+/* Hidden optimal solution */
+#ddOptSol {
+  display: none;
+}
+
+#ddRevealOpt {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #6d6d6d;
+  color: white;
+  font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+  cursor: pointer;
+  border-radius: 0.3rem;
+}
+
+#ddRevealOpt:hover {
+  background-color: #5c5c5c;
+}
+
+/* User stats section */
+.stats-section {
+  margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.stats-section p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+/* Countdown timer */
+#countdown {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+/* Buttons */
+.dialog-button {
+  margin-top: 1rem;
+  padding: 0.8rem 1.2rem;
+  border: none;
+  background: #4CAF50;
+  color: white;
+  font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+  cursor: pointer;
+  border-radius: 0.4rem;
+  width: 100%;
+  max-width: 200px;
+}
+
+.dialog-button:hover {
+  background: #45a049;
+}
+
+/* Ensures all buttons have the same style */
+#ddPracticeBtn, #ddCloseDialog, #ddShare {
+  margin-top: 0.5rem;
+}
+
+/* Make sure buttons don’t get too small on mobile */
+button {
+  touch-action: manipulation;
+}
+
+#userStats {
+  display: flex;
+  justify-content: center;
+  gap: 15px; /* Adds spacing between each stat item */
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column; /* Stack the label and value vertically */
+  align-items: center; /* Center the content horizontally */
+  text-align: center; /* Align the text in the center */
+}
+
+.stat-item strong {
+  font-size: 2rem; /* Emoji size */
+}
+
+.stat-item span {
+  font-size: 1.2rem; /* Text size for labels and numbers */
+}
+
+#userStats span {
+  margin-top: 5px; /* Adds spacing between label and number */
+}
+
+#userStats .stat-item span:first-child {
+  margin-top: 0; /* Removes top margin for the label (to avoid unnecessary space) */
+}
+
+
+  /*END*/
+
+/* Toast container */
+.toast {
+  visibility: hidden;
+  min-width: 200px;
+  background-color: #333;
+  color: white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  top: 75%;  /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust for exact centering */
+  font-size: 17px;
+  opacity: 0;
+  transition: opacity 0.5s, visibility 0.5s;
+}
+
+/* Show the toast when it is active */
+.toast.show {
+  visibility: visible;
+  opacity: 1;
+}
+
 
 #practicePuzzleId {
   display: none;
@@ -419,5 +609,86 @@ button {
   #left-arrow-btn,
   #right-arrow-btn {
     display: inline-flex; /* or flex, depending on your layout */
+  }
+}
+
+
+
+/*Start*/
+/* Dialog Box */
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.85);
+  padding: 2vh 4vw;
+  border-radius: 1rem;
+  color: white;
+  display: none;
+  z-index: 1000;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1rem, 4vw, 1.5rem); /* Font size scales with viewport */
+  width: 80vw;  /* Adjust width based on viewport */
+  max-width: 500px; /* Limit the maximum width */
+  max-height: 90vh; /* Prevent dialog from getting too tall */
+  overflow-y: auto; /* Enable scrolling if content overflows */
+}
+
+/* Dialog content */
+.dialog-content {
+  background: #222;  
+  max-width: 90vw;
+  padding: 1.5rem;
+  border-radius: 0.7rem;
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+  line-height: 1.6;
+}
+
+/* Button styling */
+.dialog-button {
+  margin-top: 1rem;
+  padding: 0.8rem 1.2rem;
+  border: none;
+  background: #4CAF50;
+  color: white;
+  font-size: clamp(0.9rem, 3.5vw, 1.2rem); /* Responsive font size */
+  cursor: pointer;
+  border-radius: 0.4rem;
+  width: 100%;
+  max-width: 200px;
+}
+
+.dialog-button:hover {
+  background: #45a049;
+}
+
+#ddRevealOpt {
+  display: grid;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #6d6d6d;
+  color: white;
+  font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+  cursor: pointer;
+  border-radius: 0.3rem;
+}
+
+#ddRevealOpt:hover {
+  background-color: #5c5c5c;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .dialog {
+    width: 90vw;  /* Adjust width to be more suitable for smaller screens */
+    padding: 3vh 5vw;  /* Increase padding for better aesthetics */
+  }
+
+  .dialog-button {
+    padding: 0.8rem 1.5rem;  /* Make the buttons a bit larger */
   }
 }
